@@ -86,6 +86,17 @@ async function seed() {
         active: true,
         createdAt: now,
         createdBy: 'system'
+      },
+      {
+        id: 'cli_002',
+        name: 'Cliente Teste',
+        email: 'cliente@drmecanico.com.br',
+        password: hash('teste123'),
+        role: 'cliente',
+        phone: '(11) 99999-0000',
+        active: true,
+        createdAt: now,
+        createdBy: 'system'
       }
     ];
 

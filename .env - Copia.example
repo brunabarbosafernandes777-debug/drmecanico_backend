@@ -19,3 +19,6 @@ SUPER_ADMIN_EMAIL=brunabarbosafernandes7@gmail.com
 
 # Ambiente (development | production)
 NODE_ENV=development
+
+# Google OAuth Client ID
+GOOGLE_CLIENT_ID=425197317527-kt5c2j5lk56jqkk7klp188d5rra6gi0q.apps.googleusercontent.com

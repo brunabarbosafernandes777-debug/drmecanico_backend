@@ -69,16 +69,20 @@ router.post('/register', async (req, res) => {
       return res.status(409).json({ error: 'Este e-mail já está cadastrado' });
 
     const hash = await bcrypt.hash(password, 10);
+    const { cpf, veiculo } = req.body;
     const newUser = {
       id:        uid(),
       name:      name.trim(),
       email:     email.toLowerCase().trim(),
       password:  hash,
       phone:     phone || '',
+      cpf:       cpf || '',
+      veiculo:   veiculo || {},
       role:      'cliente',
       active:    true,
+      assinante: true,
       createdAt: new Date().toISOString(),
-      createdBy: 'self'
+      createdBy: 'checkout'
     };
 
     db.get('users').push(newUser).write();

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>dr Mecânico — Área do Cliente</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#3E4095; display:flex; justify-content:center; min-height:100vh; font-family:Arial,Helvetica,sans-serif; }
+.page-wrap { position:relative; width:100%; max-width:480px; }
+.bg-svg { width:100%; display:block; }
+
+/* Botões invisíveis sobre os ícones */
+.btn-over {
+  position:absolute;
+  border-radius:50%;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  z-index:10;
+  transition:opacity 0.15s;
+}
+.btn-over:hover  { opacity:0.1; background:white; }
+.btn-over:active { opacity:0.2; background:white; }
+
+#btn-agendar {}
+#btn-guincho {}
+#btn-whatsapp {}
+
+/* Saudação */
+.saudacao {
+  position:absolute;
+  top:3%;
+  right:5%;
+  color:rgba(255,255,255,0.85);
+  font-size:clamp(11px,3vw,14px);
+  font-weight:700;
+  z-index:10;
+  text-align:right;
+}
+.btn-sair {
+  display:block;
+  font-size:clamp(9px,2.5vw,11px);
+  color:rgba(255,255,255,0.5);
+  cursor:pointer;
+  background:none;
+  border:none;
+  font-family:Arial;
+  text-align:right;
+  text-decoration:underline;
+}
+
+/* Abraço lateral mais forte */
+.card-stack .card + .card,
+.info-card + .info-card,
+.section-card + .section-card{
+  margin-top: 0 !important;
+}
+
+@media (max-width:768px){
+  .info-card,
+  .section-card{
+    position: relative;
+  }
+
+  .info-card:not(:first-child),
+  .section-card:not(:first-child){
+    margin-left: -10px;
+    margin-right: -10px;
+    width: calc(100% + 20px);
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="page-wrap" id="wrap">
+  <img src="/cliente.svg" class="bg-svg" id="bgsvg" alt="Área do Cliente">
+
+  <div class="saudacao" id="saudacao">
+    <span id="nome-user">Olá!</span>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </div>
+
+  <!-- Agendar Atendimento -->
+  <button class="btn-over" id="btn-agendar" onclick="window.location.href='/agendar.html'"></button>
+
+  <!-- Chamar Guincho → WhatsApp -->
+  <button class="btn-over" id="btn-guincho" onclick="chamarGuincho()"></button>
+
+  <!-- WhatsApp contato -->
+  <button class="btn-over" id="btn-whatsapp" onclick="chamarGuincho()"></button>
+</div>
+
+<script>
+var GUINCHO_WPP = '5511940446327';
+
+// Verifica login
+var tok  = localStorage.getItem('drm_token');
+var user = null;
+try { user = JSON.parse(localStorage.getItem('drm_user')); } catch(e){}
+
+if(!tok) { window.location.href = '/login.html'; }
+
+if(user && user.name) {
+  document.getElementById('nome-user').textContent = 'Olá, ' + user.name.split(' ')[0] + '!';
+}
+
+function sair() {
+  localStorage.removeItem('drm_token');
+  localStorage.removeItem('drm_user');
+  window.location.href = '/login.html';
+}
+
+function chamarGuincho() {
+  var nome = user ? user.name : 'Assinante';
+  var msg = encodeURIComponent(
+    'Olá! Sou assinante dr Mecânico (' + nome + '). Me socorre aqui? Meu carro parou!'
+  );
+  window.open('https://wa.me/' + GUINCHO_WPP + '?text=' + msg, '_blank');
+}
+
+function ajustar() {
+  var img = document.getElementById('bgsvg');
+  var iw = img.offsetWidth;
+  var ih = img.offsetHeight;
+  if(!iw || !ih) return;
+
+  var VW = 1886, VH = 3353;
+  var sx = iw / VW;
+  var sy = ih / VH;
+
+  function posBtn(el, cx, cy, r) {
+    el.style.position = 'absolute';
+    el.style.left   = ((cx - r) * sx) + 'px';
+    el.style.top    = ((cy - r) * sy) + 'px';
+    el.style.width  = (2 * r * sx) + 'px';
+    el.style.height = (2 * r * sy) + 'px';
+    el.style.borderRadius = '50%';
+  }
+
+  // Exact centers from SVG visual analysis
+  // Agendar:  center at SVG (939, 854), r=191
+  posBtn(document.getElementById('btn-agendar'),  939,  854, 191);
+  // Guincho:  center at SVG (939, 1660), r=191
+  posBtn(document.getElementById('btn-guincho'),  939, 1750, 191);
+  // WhatsApp: center at SVG (939, 2502), r=191 (exact from circle element)
+  posBtn(document.getElementById('btn-whatsapp'), 939, 2502, 191);
+
+  // Saudação position
+  var s = document.getElementById('saudacao');
+  s.style.top   = (80 * sy) + 'px';
+  s.style.right = (60 * sx) + 'px';
+}
+
+var bgsvg = document.getElementById('bgsvg');
+bgsvg.addEventListener('load', ajustar);
+window.addEventListener('resize', ajustar);
+if(bgsvg.complete) ajustar();
+</script>
+</body>
+</html>
