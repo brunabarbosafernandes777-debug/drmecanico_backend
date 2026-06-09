@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "id": "mq2z4wat",
+      "name": "Cliente Teste",
+      "email": "cliente@drmecanico.com.br",
+      "password": "$2a$10$mShL9OGtf0ZDEMODYAe7pOH5EIdwNWGx27fcPv5gmEDAzPL7jIDRq",
+      "role": "cliente",
+      "phone": "(11) 99999-0000",
+      "active": true,
+      "createdAt": "2026-06-06T23:18:18.247Z",
+      "createdBy": "system"
+    }
+  ],
+  "agendamentos": [],
+  "diagnosticos": [],
+  "guinchos": [],
+  "veiculos": []
+}

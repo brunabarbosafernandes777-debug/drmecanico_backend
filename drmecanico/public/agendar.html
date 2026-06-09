@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>dr Mecânico — Agendar</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+body {
+  background:white;
+  font-family:Arial,Helvetica,sans-serif;
+  display:flex;
+  justify-content:center;
+}
+.page {
+  width:100%;
+  max-width:480px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Header */
+.hdr {
+  padding:14px 18px 10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+}
+.hdr a { color:#3E4095; font-size:22px; text-decoration:none; }
+.logo { font-size:20px; font-weight:900; }
+.logo .dr  { color:#00AEEF; }
+.logo .mec { color:#3E4095; }
+
+/* Container dos cards */
+.cards {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  padding:0 12px 0;
+  gap:0;
+  min-height:0;
+}
+
+/* Card base */
+.card { overflow:visible; transition:flex 0.4s cubic-bezier(0.4,0,0.2,1); flex-shrink:0; }
+
+/* Card fechado: só o título aparece */
+.card.closed { flex:0 0 52px; cursor:pointer; border-radius:18px 18px 0 0; overflow:hidden; }
+
+/* Card aberto: cresce pra preencher o espaço restante */
+.card.open { flex:1 1 0; min-height:0; display:flex; flex-direction:column; border-radius:18px 18px 0 0; overflow:hidden; }
+
+/* Título */
+.card-title {
+  padding:15px 16px;
+  font-size:clamp(15px,4vw,18px);
+  font-weight:900;
+  color:white;
+  flex-shrink:0;
+  font-family:Arial,Helvetica,sans-serif;
+  letter-spacing:-0.01em;
+}
+
+/* Corpo do card — só aparece quando open */
+.card-body { flex:1; padding:0 12px 0 12px; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+
+/* Caixa branca interna */
+.white-box {
+  background:white;
+  border-radius:12px 12px 0 0;
+  flex:1;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* Textarea */
+textarea {
+  flex:1;
+  width:100%;
+  border:none;
+  outline:none;
+  font-size:14px;
+  font-family:Arial,Helvetica,sans-serif;
+  color:#333;
+  resize:none;
+  background:transparent;
+  line-height:1.6;
+  padding:14px 14px 44px 14px;
+}
+textarea::placeholder { color:#ccc; }
+
+/* IA scroll */
+.ia-scroll {
+  flex:1;
+  overflow-y:auto;
+  padding:14px 14px 44px 14px;
+  font-size:13px;
+  color:#333;
+  line-height:1.6;
+}
+
+/* Calendário scroll */
+.cal-scroll {
+  flex:1;
+  overflow-y:auto;
+  padding:10px 10px 14px;
+}
+
+/* Botão flutuante dentro do white-box */
+.btn-float {
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  border:none;
+  border-radius:20px;
+  padding:7px 20px;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+  font-family:Arial;
+  transition:all 0.15s;
+  z-index:5;
+}
+.btn-float:disabled { opacity:0.4; cursor:not-allowed; }
+.btn-float-purple { background:#4745F1; color:white; }
+.btn-float-sky    { background:#00AEEF; color:white; }
+.btn-float-orange { background:#F7941D; color:white; }
+.btn-float:hover:not(:disabled) { opacity:0.85; }
+
+/* Cores dos cards */
+.card-purple { background:#4745F1; }
+.card-sky{
+    background:#00AEEF;
+}
+.card-orange { background:#F7941D; }
+.orange-bottom-bar{height:12px;background:#F7941D;border-radius:0 0 12px 12px;flex-shrink:0;}
+
+/* Loading dots */
+.ia-loading {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+  gap:6px;
+}
+.dot { width:8px;height:8px;border-radius:50%;background:#00AEEF;animation:bounce 1.2s ease-in-out infinite; }
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:scale(0.6)}40%{transform:scale(1)}}
+
+/* Calendário */
+.cal-nav {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.cal-month { font-weight:900; font-size:14px; color:#3E4095; }
+.cal-btn   { background:none; border:none; font-size:20px; cursor:pointer; color:#3E4095; padding:2px 8px; }
+
+.cal-grid {
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:2px;
+  text-align:center;
+  margin-bottom:10px;
+}
+.day-name { font-size:10px;font-weight:700;color:#aaa;padding:3px 0; }
+.day {
+  padding:7px 2px;border-radius:7px;font-size:12px;
+  cursor:pointer;border:none;background:transparent;
+  color:#333;font-family:Arial;transition:all 0.12s;width:100%;
+}
+.day:hover:not(:disabled):not(.taken) { background:#fff3e0; }
+.day.selected { background:#F7941D;color:white; }
+.day.today    { border:2px solid #F7941D; }
+.day.taken    { color:#ccc;cursor:not-allowed;text-decoration:line-through; }
+.day:disabled { color:#ddd;cursor:not-allowed; }
+
+.slots {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+}
+.slot {
+  padding:7px 3px;border-radius:7px;font-size:11px;font-weight:700;
+  cursor:pointer;border:1.5px solid #e8e8e8;background:white;
+  color:#555;text-align:center;transition:all 0.12s;font-family:Arial;
+}
+.slot:hover:not(:disabled):not(.taken) { border-color:#F7941D;color:#F7941D; }
+.slot.selected { background:#F7941D;color:white;border-color:#F7941D; }
+.slot.taken    { background:#f5f5f5;color:#ccc;text-decoration:line-through;cursor:not-allowed; }
+.slot:disabled { opacity:0.4;cursor:not-allowed; }
+
+/* Spinner */
+.spin {
+  display:inline-block;width:13px;height:13px;
+  border:2px solid rgba(255,255,255,0.3);border-top-color:white;
+  border-radius:50%;animation:sp .7s linear infinite;margin-right:5px;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Sucesso */
+.success {
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:40px 24px;
+  flex:1;
+}
+.success .emj { font-size:64px;margin-bottom:14px; }
+.success h2   { font-size:22px;font-weight:900;color:#3E4095;margin-bottom:8px; }
+.success p    { color:#888;font-size:14px;line-height:1.6;margin-bottom:24px; }
+.btn-back {
+  padding:13px 32px;background:#3E4095;color:white;border:none;
+  border-radius:30px;font-size:15px;font-weight:900;cursor:pointer;font-family:Arial;
+  text-decoration:none;display:inline-block;
+}
+
+/* Acordeão — chão é o topo da janela abaixo */
+.card.open { flex:1 1 0; min-height:0; display:flex; flex-direction:column; border-radius:18px 18px 0 0; overflow:visible; }
+.card.closed { flex:0 0 52px; cursor:pointer; border-radius:18px 18px 0 0; overflow:visible; }
+.card:first-child.closed { border-radius:18px 18px 0 0; }
+
+
+
+
+
+
+
+
+.c-1.open, .c-2.open { border-bottom: none; }
+
+.inner-scroll {
+  flex:1;
+  overflow-y:auto;
+  padding:14px 14px 60px 14px;
+  scrollbar-width:thin;
+  scrollbar-color:#ccc #f5f5f5;
+}
+
+/* Orange strip at bottom of card-3 */
+
+/* Card laranja - sempre com radius embaixo */
+
+
+
+
+
+.c-3 { background:#F7941D; }
+.c-3.open { border-radius:18px 18px 18px 18px !important; }
+.c-3.closed { border-radius:0 0 18px 18px !important; overflow:visible !important; }
+.c-3 .white-box, .card-3 .scroll-box, .card-3 .inner-scroll { margin-bottom:12px !important; }
+
+/* stacked card overlap effect */
+.card + .card{margin-top:0px; position:relative; z-index:2;}
+.card.card-sky{border-top-left-radius:22px !important;border-top-right-radius:22px !important;}
+.card.c-3,.card.card-orange{border-top-left-radius:22px !important;border-top-right-radius:22px !important;}
+
+
+.card + .card{
+  margin-top:0 !important;
+}
+.card{
+  overflow:visible;
+}
+.card:not(:last-child){
+  border-bottom-left-radius:18px;
+  border-bottom-right-radius:18px;
+}
+
+
+/* Abraço lateral mais forte */
+.card-stack .card + .card,
+.info-card + .info-card,
+.section-card + .section-card{
+  margin-top: 0 !important;
+}
+
+@media (max-width:768px){
+  .info-card,
+  .section-card{
+    position: relative;
+  }
+}
+  .info-card:not(:first-child),
+  .section-card:not(:first-child){
+    margin-left: -10px;
+    margin-right: -10px;
+    width: calc(100% + 20px);
+  }
+#c1{
+    position:relative;
+}
+
+#c1::before{
+    content:"";
+    position:absolute;
+
+    bottom:-18px;
+    left:0;
+
+    width:18px;
+    height:18px;
+
+    background:#4745F1;
+}
+
+#c1::after{
+    content:"";
+    position:absolute;
+
+    bottom:-18px;
+    right:0;
+
+    width:18px;
+    height:18px;
+
+    background:#4745F1;
+}#c1{
+    border-bottom-left-radius:0 !important;
+    border-bottom-right-radius:0 !important;
+}#c1.open{
+    border-bottom-left-radius:0 !important;
+    border-bottom-right-radius:0 !important;
+}
+#c2{
+    position:relative;
+}
+
+#c2::before{
+    content:"";
+    position:absolute;
+
+    bottom:-18px;
+    left:0;
+
+    width:18px;
+    height:18px;
+
+    background:#00AEEF;
+}
+
+#c2::after{
+    content:"";
+    position:absolute;
+
+    bottom:-18px;
+    right:0;
+
+    width:18px;
+    height:18px;
+
+    background:#00AEEF;
+}#c2{
+    border-bottom-left-radius:0 !important;
+    border-bottom-right-radius:0 !important;
+}#c2.open{
+    border-bottom-left-radius:0 !important;
+    border-bottom-right-radius:0 !important;
+}
+#c3{
+    position:relative;
+}
+
+#c3::before{
+    content:"";
+    position:absolute;
+
+    bottom:-18px;
+    left:0;
+
+    width:18px;
+    height:18px;
+
+    background:#00AEEF;
+}
+
+#c3::after{
+    content:"";
+    position:absolute;
+
+    bottom:-18px;
+    right:0;
+
+    width:18px;
+    height:18px;
+
+    background:#00AEEF;
+}
+
+
+
+ </style>
+</head>
+<body>
+  
+<div class="page">
+  <div class="hdr">
+    <a href="/cliente.html">&#8592;</a>
+    <div class="logo"><span class="dr">dr</span><span class="mec">Mecânico</span></div>
+  </div>
+
+  <!-- Sucesso (oculto) -->
+  <div class="success" id="success">
+    <div class="emj">🎉</div>
+    <h2>Agendado!</h2>
+    <p id="stxt">Seu agendamento foi confirmado!</p>
+    <a class="btn-back" href="/cliente.html">Voltar ao início</a>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards" id="cards">
+
+    <!-- CARD 1: Roxo -->
+    <div class="card card-purple open" id="c1">
+      <div class="card-title">O que acontece com seu carro?</div>
+      <div class="card-body" id="body1">
+        <div class="white-box">
+          <div class="inner-scroll">
+          <textarea id="txt" placeholder="Descreva o que está sentindo no seu carro..."></textarea>
+          </div>
+          <button class="btn-float btn-float-purple" id="btn1" onclick="analisar()">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2: Azul -->
+    <div class="card card-sky closed" id="c2">
+      <div class="card-title">Acreditamos que seja o seguinte:</div>
+      <div class="card-body" id="body2" style="display:none">
+        <div class="white-box">
+          <div class="inner-scroll">
+          <div class="ia-scroll" style="overflow:visible;flex:1;padding:0" id="ia-resp">
+            <div class="ia-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          </div>
+          </div>
+          <button class="btn-float btn-float-sky" id="btn2" onclick="concordar()" disabled>
+            ✅ Estou de acordo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3: Laranja -->
+    <div class="card card-orange closed" id="c3">
+      <div class="card-title">Escolha uma data e horário</div>
+      <div class="card-body" id="body3" style="display:none">
+        <div class="white-box">
+          <div class="inner-scroll">
+          <div class="cal-scroll" style="overflow:visible;padding:0">
+            <div class="cal-nav">
+              <button class="cal-btn" onclick="mesAnterior()">&#8249;</button>
+              <div class="cal-month" id="cal-month"></div>
+              <button class="cal-btn" onclick="mesProximo()">&#8250;</button>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="slots" id="slots"></div>
+          </div>
+          </div>
+          <button class="btn-float btn-float-orange" id="btn3" onclick="confirmar()" disabled>
+            📅 Confirmar
+          </button>
+        </div>
+        <div class="orange-bottom-bar"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var MECANICO_WPP = '5511940446327';
+var tok  = localStorage.getItem('drm_token');
+var user = null;
+try { user = JSON.parse(localStorage.getItem('drm_user')); } catch(e){}
+if(!tok) window.location.href = '/login.html';
+
+var diag = '', dataSel = null, horaSel = null, ocupados = {};
+var calData = new Date();
+
+// ── Troca de step ────────────────────────────────────────────
+function goStep(n) {
+  // Cards: closed = só título, open = expande
+  // Step 1: c1 open, c2 e c3 closed abaixo
+  // Step 2: c1 closed acima, c2 open, c3 closed abaixo
+  // Step 3: c1 e c2 closed acima, c3 open
+
+  var c1=document.getElementById('c1'), c2=document.getElementById('c2'), c3=document.getElementById('c3');
+  var b1=document.getElementById('body1'), b2=document.getElementById('body2'), b3=document.getElementById('body3');
+
+  // Reseta tudo
+  [c1,c2,c3].forEach(function(c){ c.classList.remove('open','closed'); });
+
+  if(n===1) {
+    c1.classList.add('open');  b1.style.display='flex';
+    c2.classList.add('closed'); b2.style.display='none';
+    c3.classList.add('closed'); b3.style.display='none';
+  } else if(n===2) {
+    c1.classList.add('closed'); b1.style.display='none';
+    c2.classList.add('open');  b2.style.display='flex';
+    c3.classList.add('closed'); b3.style.display='none';
+  } else if(n===3) {
+    c1.classList.add('closed'); b1.style.display='none';
+    c2.classList.add('closed'); b2.style.display='none';
+    c3.classList.add('open');  b3.style.display='flex';
+  }
+}
+
+// ── PASSO 1 ──────────────────────────────────────────────────
+async function analisar() {
+  var prob = document.getElementById('txt').value.trim();
+  if(prob.length < 10) { alert('Descreva o problema com mais detalhes.'); return; }
+
+  var btn = document.getElementById('btn1');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+
+  // Mostra loading na caixa 2 MAS não muda de step ainda
+  document.getElementById('ia-resp').innerHTML =
+    '<div class="ia-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  document.getElementById('btn2').disabled = true;
+
+  try {
+    var r = await fetch('/api/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+      body: JSON.stringify({
+        messages: [{
+          role: 'user',
+          content: 'Problema no carro do cliente: ' + prob +
+            '. Responda em 3 parágrafos: 1) diagnóstico provável, 2) serviço recomendado, 3) tempo estimado de reparo. Português simples e direto.'
+        }]
+      })
+    });
+
+    var text = await r.text();
+    var d = {};
+    try { d = JSON.parse(text); } catch(e) {}
+
+    if(!r.ok || d.error) {
+      var errMsg = d.error || ('Erro ' + r.status + ': ' + text.substring(0, 100));
+      alert('Erro da IA: ' + errMsg);
+      btn.disabled = false;
+      btn.innerHTML = 'OK';
+      return;
+    }
+
+    diag = d.reply || '';
+    if(!diag) {
+      alert('A IA não retornou resposta. Verifique a ANTHROPIC_API_KEY no Render.');
+      btn.disabled = false;
+      btn.innerHTML = 'OK';
+      return;
+    }
+
+    // Só agora muda pro step 2
+    document.getElementById('ia-resp').innerHTML = diag.replace(/\n/g, '<br>');
+    document.getElementById('btn2').disabled = false;
+    goStep(2);
+
+  } catch(e) {
+    alert('Erro de conexão: ' + e.message);
+    btn.disabled = false;
+    btn.innerHTML = 'OK';
+  }
+}
+
+// ── PASSO 2 ──────────────────────────────────────────────────
+async function concordar() {
+  await carregarOcupados();
+  renderCal();
+  goStep(3);
+}
+
+async function carregarOcupados() {
+  try {
+    var r = await fetch('/api/agendamentos',{headers:{'Authorization':'Bearer '+tok}});
+    var ags = await r.json();
+    ocupados = {};
+    ags.forEach(function(ag){
+      if(ag.status!=='cancelado'&&ag.data){
+        if(!ocupados[ag.data]) ocupados[ag.data]=[];
+        if(ag.hora) ocupados[ag.data].push(ag.hora);
+      }
+    });
+  } catch(e){}
+}
+
+// ── Calendário ───────────────────────────────────────────────
+var MESES   = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+var DIAS    = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+var HORAS   = ['08:00','09:00','10:00','11:00','14:00','15:00','16:00','17:00'];
+
+function mesAnterior(){ calData.setMonth(calData.getMonth()-1); renderCal(); }
+function mesProximo() { calData.setMonth(calData.getMonth()+1); renderCal(); }
+
+function renderCal() {
+  var hoje=new Date(); hoje.setHours(0,0,0,0);
+  var ano=calData.getFullYear(), mes=calData.getMonth();
+  document.getElementById('cal-month').textContent = MESES[mes]+' '+ano;
+
+  var g=document.getElementById('cal-grid'); g.innerHTML='';
+  DIAS.forEach(function(d){ var e=document.createElement('div'); e.className='day-name'; e.textContent=d; g.appendChild(e); });
+
+  var prim=new Date(ano,mes,1).getDay(), tot=new Date(ano,mes+1,0).getDate();
+  for(var i=0;i<prim;i++) g.appendChild(document.createElement('div'));
+
+  for(var d=1;d<=tot;d++){
+    var dt=new Date(ano,mes,d); dt.setHours(0,0,0,0);
+    var ds=ano+'-'+String(mes+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var btn=document.createElement('button');
+    btn.className='day'+(dataSel===ds?' selected':'')+(dt.getTime()===hoje.getTime()?' today':'');
+    btn.textContent=d;
+    if(dt<hoje||dt.getDay()===0||dt.getDay()===6) btn.disabled=true;
+    else btn.onclick=(function(s){return function(){dataSel=s;horaSel=null;document.getElementById('btn3').disabled=true;renderCal();renderSlots();};})(ds);
+    g.appendChild(btn);
+  }
+  document.getElementById('slots').innerHTML='';
+  if(dataSel) renderSlots();
+}
+
+function renderSlots(){
+  var ocup=ocupados[dataSel]||[], w=document.getElementById('slots'); w.innerHTML='';
+  HORAS.forEach(function(h){
+    var isTaken=ocup.indexOf(h)>=0, isSel=horaSel===h;
+    var btn=document.createElement('button');
+    btn.className='slot'+(isTaken?' taken':'')+(isSel?' selected':'');
+    btn.textContent=h;
+    if(isTaken) btn.disabled=true;
+    else btn.onclick=(function(ho){return function(){horaSel=ho;document.getElementById('btn3').disabled=false;renderSlots();};})(h);
+    w.appendChild(btn);
+  });
+}
+
+// ── PASSO 3 ──────────────────────────────────────────────────
+async function confirmar() {
+  if(!dataSel||!horaSel){alert('Selecione data e horário.');return;}
+  var btn=document.getElementById('btn3');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Agendando...';
+
+  var prob=document.getElementById('txt').value.trim();
+  var nome=user?user.name:'Cliente';
+
+  try {
+    await fetch('/api/agendamentos',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},
+      body:JSON.stringify({tipo:prob.substring(0,60),descricao:prob+'\n\nIA:\n'+diag,data:dataSel,hora:horaSel})
+    });
+    var msg=encodeURIComponent('🔧 *AGENDAMENTO - dr Mecânico*\n\n👤 '+nome+'\n📅 '+dataSel+' às '+horaSel+'\n\n🚗 '+prob+'\n\n🤖 IA:\n'+diag);
+    window.open('https://wa.me/'+MECANICO_WPP+'?text='+msg,'_blank');
+
+    document.getElementById('cards').style.display='none';
+    var s=document.getElementById('success'); s.style.display='flex';
+    document.getElementById('stxt').textContent='Agendado para '+dataSel+' às '+horaSel+'. Mecânico notificado!';
+  } catch(e){
+    alert('Erro ao agendar.'); btn.disabled=false; btn.innerHTML='📅 Confirmar';
+  }
+
+
+
+}
+</script>
+</body>
+</html>

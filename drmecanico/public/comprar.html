@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>dr Mecânico — Assinar</title>
+<style> @font-face {
+    font-family:'Swiss721 Heavy BT';
+    src:url('./fonts/Swiss721HeavyBT.ttf') format('truetype');
+    font-weight:1400px;
+    font-style:normal;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html, body{
+    height:100%;
+    overflow:visible;
+}
+
+body{
+    background:white;
+}
+
+.page{
+    width:100%;
+    max-width:480px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+}
+.hdr a{
+    margin-top:10px;
+}
+.hdr a{
+    color:#3E4095;
+    font-size:22px;
+    text-decoration:none;
+    line-height:1;
+}
+.hdr{
+    padding:20px 28px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+}
+
+
+.logo{
+    width:220px;
+    height:auto;
+    margin-top:-10px;}
+
+.inner-scroll {
+  overflow:visible;
+    padding:14px 14px 14px 14px;
+}
+
+/* Cards */
+.cards{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    padding:0 30px 40px;
+    min-height:0;
+    gap:0;
+    margin-bottom:40px;
+    margin-top:20px;
+}
+
+.card{
+    margin-left:0px;
+    margin-right:12px;
+}
+.card {
+    font-family: Gadugi, sans-serif;
+}.card p {
+    font-family: Gadugi, sans-serif;
+    font-weight: normal;
+}.card h3 {
+    font-family: Gadugi, sans-serif;
+    font-weight: bold;
+}
+
+.card { overflow:visible; transition:flex 0.4s cubic-bezier(0.4,0,0.2,1); flex-shrink:0; }
+.card.open { flex:0 0 auto; min-height:0; height:350px; display:flex; flex-direction:column; border-radius:18px 18px 0 0; overflow:visible; }
+.card.closed { flex:0 0 52px; cursor:pointer; border-radius:16px 16px 0 0; overflow:visible; }
+.card-title {
+    padding:20px 18px;
+ font-size:clamp(16px,4vw,20px); font-weight:900; color:white; flex-shrink:0; }
+.card-1 .card-title{
+    padding:25px 18px;
+}.card-1.open {max-height: 300px !important;}
+ .card-1 { background:#4745F1; }
+.card-2 { background:#00AEEF; }
+.card-3{
+    border-radius:12px 12px 0 0;
+} .card-3.closed{
+    border-radius:0 0 12px 12px !important;
+}.card-3.open{
+    border-radius:12px !important;
+}
+/* Card body — NO padding, white-box fills everything */
+.card-body { flex:1; padding:0 12px 0 12px; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+
+.card-1.open, .card-2.open { border-bottom:none; box-shadow:none; }
+
+.inner-scroll { flex:1; overflow-y:auto; padding:14px 14px 60px 14px; scrollbar-width:thin; }
+
+/* Orange strip at bottom of card-3 */
+
+/* Card laranja - sempre com radius embaixo */
+
+
+
+
+
+.card-3 { background:#F7941D; }
+.card-3.open { border-radius:18px 18px 18px 18px !important; }
+.card-3.closed { border-radius:0 0 18px 18px !important; overflow:visible !important; }
+.card-3 .white-box, .card-3 .scroll-box, .card-3 .inner-scroll { margin-bottom:12px !important; }
+
+/* stacked card overlap effect */
+.card + .card{margin-top:0px; position:relative; z-index:2;}
+.card.card-sky{border-top-left-radius:22px !important;border-top-right-radius:22px !important;}
+.card.card-3,
+.card.card-orange{
+    border-top-left-radius:10px !important;
+    border-top-right-radius:10px !important;
+}
+
+
+.card + .card{
+  margin-top:0 !important;
+}
+.card{
+  overflow:visible;
+}
+
+/* White box — no radius, fills card completely */
+.white-box {
+  background:white;
+  border-radius:0;
+  flex:1;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.white-box::-webkit-scrollbar { width:5px; }
+.white-box::-webkit-scrollbar-thumb { background:#ccc; border-radius:3px; }
+
+/* Form */
+.fg { margin-bottom:11px; }
+.fg label { display:block; font-size:11px; color:#888; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:3px; }
+.fg input, .fg select { width:100%; padding:10px 12px; border:1.5px solid #e8e8e8; border-radius:10px; font-size:14px; outline:none; font-family:Arial; background:white; }
+.fg input:focus { border-color:#4745F1; }
+.fg-row  { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.fg-row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.err { background:#fff0f0; border:1px solid #ffcccc; color:#cc3333; padding:8px 11px; border-radius:9px; font-size:12px; margin-bottom:10px; display:none; }
+
+/* Termo */
+.termo { font-size:12px; color:#555; line-height:1.7; }
+.termo h3 { color:#3E4095; font-size:13px; margin:10px 0 4px; }
+.check-wrap { display:flex; align-items:center; gap:8px; margin-top:12px; }
+.check-wrap input[type=checkbox] { width:18px; height:18px; cursor:pointer; accent-color:#00AEEF; flex-shrink:0; }
+.check-wrap label { font-size:13px; color:#333; font-weight:600; cursor:pointer; }
+
+/* Pagamento */
+.price-resumo { background:#f8f9ff; border-radius:11px; padding:12px 14px; margin-bottom:12px; }
+.price-row { display:flex; justify-content:space-between; font-size:13px; color:#888; margin-bottom:4px; }
+.price-row.total { font-size:16px; font-weight:900; color:#3E4095; margin:0; }
+.toggle-2 { display:flex; align-items:center; gap:10px; margin-bottom:14px; padding:10px 12px; background:#f8f9ff; border-radius:10px; }
+.toggle-2 input { width:18px; height:18px; accent-color:#4745F1; cursor:pointer; }
+.toggle-2 label { font-size:13px; font-weight:700; color:#3E4095; cursor:pointer; }
+.card-header { font-size:12px; font-weight:700; color:#3E4095; text-transform:uppercase; letter-spacing:0.04em; margin:10px 0 6px; padding-bottom:4px; border-bottom:2px solid #4745F1; }
+.card-header.card2 { color:#00AEEF; border-color:#00AEEF; }
+.valor-split { background:#fff3e0; border:1.5px solid #F7941D; border-radius:10px; padding:10px 12px; margin-bottom:10px; }
+.valor-split label { font-size:11px; color:#F7941D; font-weight:700; text-transform:uppercase; display:block; margin-bottom:4px; }
+.valor-split input { width:100%; border:none; outline:none; font-size:15px; font-weight:700; color:#333; background:transparent; font-family:Arial; }
+.btn-fin { width:100%; padding:14px; background:#F7941D; color:white; border:none; border-radius:30px; font-size:15px; font-weight:900; cursor:pointer; font-family:Arial; transition:all 0.15s; margin-top:0px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.btn-fin:hover:not(:disabled) { opacity:0.9; }
+.btn-fin:disabled { opacity:0.5; cursor:not-allowed; }
+
+/* Floating nav */
+.float-nav { position:absolute; bottom:6px; left:14px; display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.95); border-radius:20px; padding:6px 12px; box-shadow:0 2px 12px rgba(0,0,0,0.12); z-index:5; }
+.fnav-dots { display:flex; gap:8px; align-items:center; }
+.fdot { font-size:14px; color:#ccc; font-weight:700; }
+.fdot.active { font-size:17px; font-weight:900; }
+.fdot.done { color:#A8CF45; }
+.float-nav-purple .fdot.active { color:#4745F1; }
+.float-nav-sky    .fdot.active { color:#00AEEF; }
+.float-nav-orange .fdot.active { color:#F7941D; }
+.fnav-arrow { background:none; border:none; font-size:20px; cursor:pointer; padding:0 4px; line-height:1; }
+.float-nav-purple .fnav-arrow { color:#4745F1; }
+.float-nav-sky    .fnav-arrow { color:#00AEEF; }
+.fnav-arrow:disabled { color:#ddd; cursor:not-allowed; }
+
+/* Sucesso */
+.success { display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 24px; flex:1; }
+.success .emj { font-size:64px; margin-bottom:14px; }
+.success h2 { font-size:22px; font-weight:900; color:#3E4095; margin-bottom:8px; }
+.success p { color:#888; font-size:14px; line-height:1.6; margin-bottom:16px; }
+.btn-voltar { padding:13px 32px; background:#3E4095; color:white; border:none; border-radius:30px; font-size:15px; font-weight:900; cursor:pointer; font-family:Arial; text-decoration:none; display:inline-block; }
+.spin { display:inline-block; width:15px; height:15px; border:2px solid rgba(255,255,255,.4); border-top-color:white; border-radius:50%; animation:sp .7s linear infinite; }
+@keyframes sp { to { transform:rotate(360deg); } }
+
+
+
+
+
+
+
+
+.card-1.open, .card-2.open { border-bottom:none; box-shadow:none; }
+
+.inner-scroll { flex:1; overflow-y:auto; padding:14px 14px 60px 14px; scrollbar-width:thin; }
+
+/* Orange strip at bottom of card-3 */
+
+/* Card laranja - sempre com radius embaixo */
+
+
+
+
+
+
+
+
+
+/* Abraço lateral mais forte */
+.card-stack .card + .card,
+.info-card + .info-card,
+.section-card + .section-card{
+  margin-top: 0 !important;
+}
+
+@media (max-width:768px){
+  .info-card,
+  .section-card{
+    position: relative;
+  }
+
+  .info-card:not(:first-child),
+  .section-card:not(:first-child){
+    margin-left: -10px;
+    margin-right: -10px;
+    width: calc(100% + 20px);
+  }
+} /* CARD 1 (ROXO) */
+
+
+
+  
+#c1,
+#c2,
+#c3{
+    position:relative;
+}
+#c1::before,
+#c1::after,
+#c2::before,
+#c2::after{
+    content:"";
+    position:absolute;
+    width:18px;
+    height:18px;
+    z-index:1;
+}
+
+#c1::before{
+    left:0;
+    background:#4745F1;
+    bottom:-18px;
+}
+
+#c1::after{
+    right:0;
+    background:#4745F1;
+    bottom:-18px;
+}
+
+#c2::before{
+    left:0;
+    background:#00AEEF;
+    bottom:-12px;
+}
+
+#c2::after{
+    right:0;
+    background:#00AEEF;
+    bottom:-12px;
+}
+
+#c1::before{
+    left:0;
+    background:#4745F1;
+}
+
+#c1::after{
+    right:0;
+    background:#4745F1;
+}
+
+#c2::before{
+    left:0;
+    background:#00AEEF;
+}
+
+#c2::after{
+    right:0;
+    background:#00AEEF;
+} body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* remove radius de baixo do roxo */
+#c1,
+#c1.open{
+    border-bottom-left-radius:0 !important;
+    border-bottom-right-radius:0 !important;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hdr">
+    <a href="/">&#8592;</a>
+    <img src="images/marca.svg" class="logo" alt="dr Mecânico">
+  </div>
+
+  <div class="success" id="success">
+    <div class="emj">🎉</div>
+    <h2>Bem-vindo ao Clube, <span id="success-nome"></span>!</h2>
+    <p>Assinatura confirmada! Suas credenciais de acesso:</p>
+    <div style="background:#f0f9ff;border:1.5px solid #00AEEF;border-radius:12px;padding:14px;margin:12px 0;text-align:left;width:100%">
+      <div style="font-size:12px;color:#888;margin-bottom:4px">E-mail</div>
+      <div style="font-size:14px;font-weight:700;color:#3E4095;margin-bottom:10px" id="success-email"></div>
+      <div style="font-size:12px;color:#888;margin-bottom:4px">Senha temporária</div>
+      <div style="font-size:18px;font-weight:900;color:#4745F1;letter-spacing:2px" id="success-senha"></div>
+    </div>
+    <p style="font-size:12px;color:#aaa">Salve sua senha! Você pode alterá-la depois no seu perfil.</p>
+    <a class="btn-voltar" href="/login.html" style="margin-top:16px;display:inline-block">Fazer Login →</a>
+  </div>
+
+  <div class="cards" id="cards">
+
+    <!-- CARD 1 -->
+    <div class="card card-1 open" id="c1">
+      <div class="card-title" onclick="trocar(1)">Dados pessoais e do veículo</div>
+      <div class="card-body" id="b1">
+        <div class="white-box">
+          <div class="inner-scroll">
+          <div class="err" id="err1"></div>
+          <div class="fg"><label>Nome completo *</label><input id="nome" placeholder="Seu nome completo"></div>
+          <div class="fg"><label>E-mail *</label><input type="email" id="email" placeholder="seu@email.com"></div>
+          <div class="fg-row">
+            <div class="fg"><label>Telefone *</label><input id="tel" placeholder="(11) 99999-0000" oninput="fmt(this,'tel')"></div>
+            <div class="fg"><label>CPF *</label><input id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="fmt(this,'cpf')"></div>
+          </div>
+          <div class="fg-row">
+            <div class="fg"><label>Placa *</label><input id="placa" placeholder="ABC-1234" maxlength="8" oninput="fmt(this,'placa')"></div>
+            <div class="fg"><label>Modelo *</label><input id="modelo" placeholder="VW Gol 2018" oninput="validarCarro()"></div>
+          </div>
+          <div id="carro-err" style="display:none;background:#fff0f0;border:1px solid #ffcccc;color:#cc3333;padding:8px 11px;border-radius:9px;font-size:12px;margin-bottom:8px">
+            ⚠️ Seu veículo não é contemplado no plano. Veja a lista em <a href="/saiba-mais" style="color:#cc3333;font-weight:700">Saiba Mais</a>.
+          </div>
+          <div class="fg-row">
+            <div class="fg"><label>Ano</label><input id="ano" placeholder="2018" maxlength="4"></div>
+            <div class="fg"><label>Cor</label><input id="cor" placeholder="Prata"></div>
+          </div>
+          <div class="fg" style="background:#f8f9ff;border-radius:10px;padding:12px;margin-bottom:4px">
+            <label style="margin-bottom:8px;display:block">Você usa o veículo como Uber ou Taxista?</label>
+            <div style="display:flex;gap:16px">
+              <label style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;cursor:pointer;text-transform:none;color:#333;letter-spacing:0">
+                <input type="radio" name="uber" value="nao" checked onchange="checkUber()" style="width:16px;height:16px;accent-color:#4745F1"> Não
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;cursor:pointer;text-transform:none;color:#333;letter-spacing:0">
+                <input type="radio" name="uber" value="sim" onchange="checkUber()" style="width:16px;height:16px;accent-color:#cc3333"> Sim
+              </label>
+            </div>
+            <div id="uber-err" style="display:none;margin-top:8px;background:#fff0f0;border:1px solid #ffcccc;color:#cc3333;padding:8px;border-radius:8px;font-size:12px">
+              ⚠️ Motoristas de aplicativo e taxistas não são elegíveis para este plano.
+            </div>
+          </div>
+          <div class="fg">
+            <label>📷 Foto do veículo *</label>
+            <div style="border:1.5px dashed #e0e0e0;border-radius:10px;padding:12px;text-align:center;cursor:pointer;background:#fafafa" onclick="document.getElementById('foto-input').click()">
+              <div id="foto-preview" style="display:none;margin-bottom:8px"><img id="foto-img" style="max-width:100%;max-height:120px;border-radius:8px;object-fit:cover"></div>
+              <div id="foto-placeholder"><div style="font-size:28px;margin-bottom:4px">📷</div><div style="font-size:12px;color:#aaa">Toque para tirar foto do veículo</div></div>
+            </div>
+            <input type="file" id="foto-input" accept="image/*" capture="environment" style="display:none" onchange="previewFoto(this,'foto')">
+          </div>
+          <div class="fg">
+            <label>📷 Foto do hodômetro (km) *</label>
+            <div style="border:1.5px dashed #e0e0e0;border-radius:10px;padding:12px;text-align:center;cursor:pointer;background:#fafafa" onclick="document.getElementById('hodo-input').click()">
+              <div id="hodo-preview" style="display:none;margin-bottom:8px"><img id="hodo-img" style="max-width:100%;max-height:120px;border-radius:8px;object-fit:cover"></div>
+              <div id="hodo-placeholder"><div style="font-size:28px;margin-bottom:4px">🔢</div><div style="font-size:12px;color:#aaa">Foto do painel com a quilometragem</div></div>
+            </div>
+            <input type="file" id="hodo-input" accept="image/*" capture="environment" style="display:none" onchange="previewFoto(this,'hodo')">
+          </div>
+          </div>
+          <!-- Nav flutuante card 1 -->
+          <div class="float-nav float-nav-purple">
+            <div class="fnav-dots">
+              <span class="fdot active">1</span>
+              <span class="fdot">2</span>
+              <span class="fdot">3</span>
+            </div>
+            <button class="fnav-arrow" onclick="irStep(2)">&#9654;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="card card-2 closed" id="c2">
+      <div class="card-title" onclick="trocar(2)">Termo de adesão</div>
+      <div class="card-body" id="b2" style="display:none">
+        <div class="white-box">
+          <div class="inner-scroll">
+          <div class="termo">
+            <h3>CONTRATO DE ADESÃO — CLUBE DR MECÂNICO</h3>
+            <p>Ao assinar o Clube dr Mecânico, o associado declara ter lido e concordado com os seguintes termos:</p>
+            <h3>1. Serviços incluídos</h3>
+            <p>Manutenção preventiva mensal, sistema elétrico básico, freios, suspensão, motor (serviços intermediários), câmbio simples e diagnóstico básico conforme descrito na página de Serviços.</p>
+            <h3>2. Veículos atendidos</h3>
+            <p>Veículos populares nacionais de 2005 a 2020, conforme lista disponível em nosso site.</p>
+            <h3>3. Guincho</h3>
+            <p>2 utilizações por ano, até 50km de ida + 50km de retorno. Excedente pago diretamente ao prestador (até R$12/km).</p>
+            <h3>4. Pagamento</h3>
+            <p>Assinatura mensal de R$84,90. Cancelamento pode ser solicitado a qualquer momento sem multa.</p>
+            <h3>5. Agendamento</h3>
+            <p>Serviços mediante agendamento prévio, de segunda a sexta das 8h às 18h.</p>
+            <h3>6. Cancelamento</h3>
+            <p>O associado pode cancelar a qualquer momento. Não há reembolso proporcional do mês vigente.</p>
+          </div>
+          <div class="check-wrap">
+            <input type="checkbox" id="aceito" onchange="toggleAceito()">
+            <label for="aceito">Li e aceito os termos de adesão</label>
+          </div>
+          </div>
+          <!-- Nav flutuante card 2 -->
+          <div class="float-nav float-nav-sky">
+            <div class="fnav-dots">
+              <span class="fdot done">1</span>
+              <span class="fdot active">2</span>
+              <span class="fdot">3</span>
+            </div>
+            <button class="fnav-arrow" id="fnav-arrow2" onclick="irStep(3)" disabled>&#9654;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="card card-3 closed" id="c3">
+      <div class="card-title" onclick="trocar(3)">Pagamento</div>
+      <div class="card-body" id="b3" style="display:none">
+        <div class="white-box">
+          <div class="inner-scroll">
+          <div class="err" id="err3"></div>
+          <div class="price-resumo">
+            <div class="price-row"><span>Clube dr Mecânico</span><span>R$84,90/mês</span></div>
+            <div class="price-row"><span>7 primeiros dias</span><span style="color:#A8CF45">Grátis</span></div>
+            <div style="border-top:1px solid #e0e0e0;margin:6px 0"></div>
+            <div class="price-row total"><span>Total hoje</span><span>R$0,00</span></div>
+          </div>
+          <div class="toggle-2">
+            <input type="checkbox" id="dois-cartoes" onchange="toggleDoisCartoes()">
+            <label for="dois-cartoes">💳 Pagar com 2 cartões</label>
+          </div>
+          <div class="card-header">Cartão 1</div>
+          <div id="valor-c1-wrap" style="display:none">
+            <div class="valor-split">
+              <label>Valor no Cartão 1 (R$)</label>
+              <input type="number" id="valor-c1" placeholder="0,00" step="0.01" min="1" oninput="calcValor2()">
+            </div>
+          </div>
+          <div class="fg"><label>Número do cartão *</label><input id="c1num" placeholder="0000 0000 0000 0000" maxlength="19" oninput="fmt(this,'card')"></div>
+          <div class="fg"><label>Nome no cartão *</label><input id="c1nome" placeholder="NOME COMO NO CARTÃO" style="text-transform:uppercase"></div>
+          <div class="fg-row3">
+            <div class="fg"><label>Validade *</label><input id="c1val" placeholder="MM/AA" maxlength="5" oninput="fmt(this,'exp')"></div>
+            <div class="fg"><label>CVV *</label><input type="password" id="c1cvv" placeholder="123" maxlength="4"></div>
+            <div class="fg"><label>Parcelas</label><select id="c1parc"><option value="1">1x</option><option value="2">2x</option><option value="3">3x</option><option value="6">6x</option><option value="12">12x</option></select></div>
+          </div>
+          <div id="bloco-c2" style="display:none">
+            <div class="card-header card2">Cartão 2</div>
+            <div class="valor-split" style="border-color:#00AEEF;background:#f0faff">
+              <label style="color:#00AEEF">Valor no Cartão 2 (calculado)</label>
+              <input type="text" id="valor-c2-display" readonly style="color:#00AEEF">
+            </div>
+            <div class="fg"><label>Número do cartão *</label><input id="c2num" placeholder="0000 0000 0000 0000" maxlength="19" oninput="fmt(this,'card')"></div>
+            <div class="fg"><label>Nome no cartão *</label><input id="c2nome" placeholder="NOME COMO NO CARTÃO" style="text-transform:uppercase"></div>
+            <div class="fg-row3">
+              <div class="fg"><label>Validade *</label><input id="c2val" placeholder="MM/AA" maxlength="5" oninput="fmt(this,'exp')"></div>
+              <div class="fg"><label>CVV *</label><input type="password" id="c2cvv" placeholder="123" maxlength="4"></div>
+              <div class="fg"><label>Parcelas</label><select id="c2parc"><option value="1">1x</option><option value="2">2x</option><option value="3">3x</option><option value="6">6x</option><option value="12">12x</option></select></div>
+            </div>
+          </div>
+          <button class="btn-fin" id="btn-fin" onclick="finalizar()">🔒 Concluir Assinatura — R$84,90</button>
+          <p style="text-align:center;font-size:11px;color:#bbb;margin-top:8px">🔒 Pagamento seguro via Pagar.me</p>
+          </div>
+          <!-- Nav flutuante card 3 -->
+          <div class="float-nav float-nav-orange">
+            <div class="fnav-dots">
+              <span class="fdot done">1</span>
+              <span class="fdot done">2</span>
+              <span class="fdot active">3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  </div>
+</div>
+
+<script>
+var TOTAL = 84.90;
+var step  = 1;
+
+var CARROS = ["volkswagen gol", "volkswagen voyage", "volkswagen fox", "volkswagen saveiro", "fiat uno", "fiat palio", "fiat siena", "fiat grand siena", "fiat mobi", "fiat argo", "fiat cronos", "fiat strada", "fiat fiorino", "chevrolet celta", "chevrolet classic", "chevrolet corsa", "chevrolet prisma", "chevrolet onix", "chevrolet montana", "ford ka", "ford fiesta", "renault sandero", "renault logan", "hyundai hb20", "hyundai hb20s", "toyota etios", "nissan march", "nissan versa"];
+
+function trocar(n) { if(n < step) irStep(n); }
+
+function irStep(n) {
+  if(n===2 && !validar1()) return;
+  if(n===3 && !validarTermo()) return;
+  [1,2,3].forEach(function(i){
+    var c=document.getElementById('c'+i), b=document.getElementById('b'+i);
+    if(i===n){ c.classList.remove('closed'); c.classList.add('open'); b.style.display='flex'; }
+    else     { c.classList.remove('open');   c.classList.add('closed'); b.style.display='none'; }
+  });
+  step=n;
+}
+
+function showErr(id,msg){ var e=document.getElementById(id); if(e){e.textContent=msg;e.style.display=msg?'block':'none';} }
+
+function validar1() {
+  var nome=document.getElementById('nome').value.trim();
+  var email=document.getElementById('email').value.trim();
+  var tel=document.getElementById('tel').value.trim();
+  var cpf=document.getElementById('cpf').value.trim();
+  var placa=document.getElementById('placa').value.trim();
+  var modelo=document.getElementById('modelo').value.trim();
+  if(!nome||!email||!tel||!cpf||!placa||!modelo){ showErr('err1','Preencha todos os campos obrigatórios.'); return false; }
+  if(!email.includes('@')){ showErr('err1','E-mail inválido.'); return false; }
+  if(!validarCarro()){ showErr('err1','Seu veículo não é atendido pelo plano.'); return false; }
+  if(document.querySelector('input[name="uber"]:checked').value==='sim'){ showErr('err1','Motoristas de aplicativo não são elegíveis.'); return false; }
+  if(!document.getElementById('foto-input').files.length){ showErr('err1','Adicione a foto do veículo.'); return false; }
+  if(!document.getElementById('hodo-input').files.length){ showErr('err1','Adicione a foto do hodômetro.'); return false; }
+  showErr('err1',''); return true;
+}
+
+function validarTermo() {
+  if(!document.getElementById('aceito').checked){ alert('Aceite os termos para continuar.'); return false; }
+  return true;
+}
+
+function toggleAceito() {
+  var ok=document.getElementById('aceito').checked;
+  var a=document.getElementById('fnav-arrow2'); if(a) a.disabled=!ok;
+}
+
+function validarCarro() {
+  var modelo=document.getElementById('modelo').value.trim().toLowerCase();
+  if(!modelo){ document.getElementById('carro-err').style.display='none'; return true; }
+  var ok=CARROS.some(function(c){ return modelo.includes(c)||c.includes(modelo.split(' ')[0]); });
+  document.getElementById('carro-err').style.display=ok?'none':'block';
+  return ok;
+}
+
+function checkUber() {
+  var v=document.querySelector('input[name="uber"]:checked').value;
+  document.getElementById('uber-err').style.display=v==='sim'?'block':'none';
+}
+
+function previewFoto(input,tipo) {
+  if(!input.files||!input.files[0]) return;
+  var r=new FileReader();
+  r.onload=function(e){ document.getElementById(tipo+'-img').src=e.target.result; document.getElementById(tipo+'-preview').style.display='block'; document.getElementById(tipo+'-placeholder').style.display='none'; };
+  r.readAsDataURL(input.files[0]);
+}
+
+function toggleDoisCartoes() {
+  var d=document.getElementById('dois-cartoes').checked;
+  document.getElementById('bloco-c2').style.display=d?'block':'none';
+  document.getElementById('valor-c1-wrap').style.display=d?'block':'none';
+  if(d) calcValor2();
+}
+
+function calcValor2() {
+  var v1=parseFloat(document.getElementById('valor-c1').value)||0;
+  document.getElementById('valor-c2-display').value='R$ '+(Math.max(0,TOTAL-v1).toFixed(2)).replace('.',',');
+}
+
+function fmt(el,type) {
+  var v=el.value;
+  if(type==='cpf'){   v=v.replace(/\D/g,'').substring(0,11); v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2'); }
+  if(type==='tel'){   v=v.replace(/\D/g,'').substring(0,11); v=v.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2'); }
+  if(type==='placa'){ v=v.toUpperCase().replace(/[^A-Z0-9]/g,''); if(v.length>3) v=v.substring(0,3)+'-'+v.substring(3,7); }
+  if(type==='card'){  v=v.replace(/\D/g,'').substring(0,16).replace(/(\d{4})(?=\d)/g,'$1 '); }
+  if(type==='exp'){   v=v.replace(/\D/g,'').substring(0,4); if(v.length>=2) v=v.substring(0,2)+'/'+v.substring(2); }
+  el.value=v;
+}
+
+function gerarSenha() {
+  var c='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  var s=''; for(var i=0;i<8;i++) s+=c[Math.floor(Math.random()*c.length)]; return s;
+}
+
+async function finalizar() {
+  showErr('err3','');
+  var dois=document.getElementById('dois-cartoes').checked;
+  var c1num=document.getElementById('c1num').value.replace(/\s/g,'');
+  var c1nome=document.getElementById('c1nome').value.trim();
+  var c1val=document.getElementById('c1val').value.trim();
+  var c1cvv=document.getElementById('c1cvv').value.trim();
+  if(!c1num||c1num.length<15||!c1nome||!c1val||!c1cvv){ showErr('err3','Preencha todos os campos do cartão 1.'); return; }
+
+  var payload={
+    cliente:{
+      nome:document.getElementById('nome').value.trim(),
+      email:document.getElementById('email').value.trim(),
+      tel:document.getElementById('tel').value.trim(),
+      cpf:document.getElementById('cpf').value.trim(),
+      placa:document.getElementById('placa').value.trim(),
+      modelo:document.getElementById('modelo').value.trim(),
+      ano:document.getElementById('ano').value.trim(),
+      cor:document.getElementById('cor').value.trim()
+    },
+    total:TOTAL,
+    pagamentos:[{ valor:dois?parseFloat(document.getElementById('valor-c1').value):TOTAL, numero:c1num, nome:c1nome, validade:c1val, cvv:c1cvv, parcelas:parseInt(document.getElementById('c1parc').value) }]
+  };
+
+  if(dois) {
+    var v1=parseFloat(document.getElementById('valor-c1').value)||0;
+    if(v1<=0||v1>=TOTAL){ showErr('err3','Valor do cartão 1 inválido.'); return; }
+    var c2num=document.getElementById('c2num').value.replace(/\s/g,'');
+    var c2nome=document.getElementById('c2nome').value.trim();
+    var c2val=document.getElementById('c2val').value.trim();
+    var c2cvv=document.getElementById('c2cvv').value.trim();
+    if(!c2num||c2num.length<15||!c2nome||!c2val||!c2cvv){ showErr('err3','Preencha todos os campos do cartão 2.'); return; }
+    payload.pagamentos.push({ valor:parseFloat((TOTAL-v1).toFixed(2)), numero:c2num, nome:c2nome, validade:c2val, cvv:c2cvv, parcelas:parseInt(document.getElementById('c2parc').value) });
+  }
+
+  var btn=document.getElementById('btn-fin');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spin"></span> Processando...';
+
+  try {
+    var r=await fetch('/api/pagamento/pagarme',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    var data=await r.json();
+    if(!r.ok||data.error){ showErr('err3',data.error||'Erro ao processar pagamento.'); btn.disabled=false; btn.innerHTML='🔒 Concluir Assinatura — R$84,90'; return; }
+
+    btn.innerHTML='<span class="spin"></span> Ativando conta...';
+    var senha=gerarSenha();
+    await fetch('/api/auth/register',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ name:payload.cliente.nome, email:payload.cliente.email, password:senha, phone:payload.cliente.tel, cpf:payload.cliente.cpf, veiculo:{ placa:payload.cliente.placa, modelo:payload.cliente.modelo, ano:payload.cliente.ano, cor:payload.cliente.cor } }) });
+
+    document.getElementById('cards').style.display='none';
+    var s=document.getElementById('success'); s.style.display='flex';
+    document.getElementById('success-nome').textContent=payload.cliente.nome.split(' ')[0];
+    document.getElementById('success-email').textContent=payload.cliente.email;
+    document.getElementById('success-senha').textContent=senha;
+  } catch(e){ showErr('err3','Erro de conexão.'); btn.disabled=false; btn.innerHTML='🔒 Concluir Assinatura — R$84,90'; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>dr Mecânico — Saiba Mais</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+body { background:white; font-family:Arial,Helvetica,sans-serif; display:flex; justify-content:center; }
+.page { width:100%; max-width:480px; height:100%; display:flex; flex-direction:column; }
+
+.hdr { padding:14px 18px 10px; display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.hdr a { color:#3E4095; font-size:22px; text-decoration:none; }
+.logo { font-size:20px; font-weight:900; }
+.logo .dr { color:#00AEEF; }
+.logo .mec { color:#3E4095; }
+
+/* Stack de cards SEM gap — chão é o topo da janela de baixo */
+.cards { flex:1; display:flex; flex-direction:column; padding:0 12px 0; min-height:0; gap:0; }
+
+.card { overflow:hidden; transition:flex 0.4s cubic-bezier(0.4,0,0.2,1); flex-shrink:0; }
+/* Card aberto: cantos superiores arredondados, inferiores retos */
+.card.open { flex:1 1 0; min-height:0; display:flex; flex-direction:column; border-radius:18px 18px 0 0; overflow:hidden; }
+/* Card fechado: sem cantos (serve de chão do card acima e teto do próximo) */
+.card.closed { flex:0 0 52px; cursor:pointer; border-radius:18px 18px 0 0; overflow:hidden; }
+/* Último card fechado: cantos inferiores arredondados */
+/* Se primeiro card está fechado: cantos superiores */
+.card.closed:first-child { border-radius:18px 18px 0 0; }
+
+.card-title { padding:15px 18px; font-size:clamp(14px,4vw,17px); font-weight:900; color:white; flex-shrink:0; }
+.card-1 { background:#4745F1; }
+.card-2 { background:#00AEEF; }
+.card-body { flex:1; padding:0 12px 0 12px; display:flex; flex-direction:column; min-height:0; overflow:hidden; position:relative; }
+
+/* Caixa branca com scroll */
+.scroll-box { background:white; border-radius:12px 12px 0 0; flex:1; overflow-y:auto; padding:14px 14px 14px 14px; scrollbar-width:thin; scrollbar-color:#ccc #f5f5f5; }
+.scroll-box::-webkit-scrollbar { width:5px; }
+.scroll-box::-webkit-scrollbar-thumb { background:#ccc; border-radius:3px; }
+
+.v-item { padding:4px 0; border-bottom:1px solid #f5f5f5; }
+.v-item:last-child { border:none; }
+.s-title { font-weight:700; font-size:clamp(13px,3.5vw,15px); color:#222; margin:10px 0 4px; }
+.s-title:first-child { margin-top:0; }
+.s-sub { font-weight:600; color:#555; margin:6px 0 2px; }
+.s-nao { color:#aaa; font-style:italic; }
+.s-hr { border:none; border-top:1px solid #eee; margin:8px 0; }
+
+/* Botão COMPRAR flutuante no fundo do card */
+.btn-comprar {
+  position:absolute;
+  bottom:12px;
+  right:14px;
+  width:130px;
+  padding:10px 16px;
+  color:white;
+  border:none;
+  border-radius:30px;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+  font-family:Arial;
+  transition:all 0.15s;
+  text-align:center;
+  z-index:10;
+}
+.btn-c1 { background:#4745F1; }
+.btn-c2 { background:#00AEEF; }
+.btn-c3 { background:#F7941D; }
+.btn-comprar:hover { opacity:0.9; transform:translateY(-1px); }
+
+
+
+
+
+
+
+
+.card-1.open, .card-2.open { border-bottom: none; }
+
+/* Orange strip at bottom of card-3 */
+
+/* Card laranja - sempre com radius embaixo */
+
+
+
+
+
+.card-3 { background:#F7941D; }
+.card-3.open { border-radius:18px 18px 18px 18px !important; }
+.card-3.closed { border-radius:0 0 18px 18px !important; overflow:hidden !important; }
+.card-3 .white-box, .card-3 .scroll-box, .card-3 .inner-scroll { margin-bottom:12px !important; }
+
+/* stacked card overlap effect */
+.card + .card{margin-top:0px; position:relative; z-index:2;}
+.card.card-sky{border-top-left-radius:22px !important;border-top-right-radius:22px !important;}
+.card.card-3,.card.card-orange{border-top-left-radius:22px !important;border-top-right-radius:22px !important;}
+
+
+.card + .card{
+  margin-top:0 !important;
+}
+.card{
+  overflow:hidden;
+}
+.card:not(:last-child){
+  border-bottom-left-radius:18px;
+  border-bottom-right-radius:18px;
+}
+
+
+/* Abraço lateral mais forte */
+.card-stack .card + .card,
+.info-card + .info-card,
+.section-card + .section-card{
+  margin-top: 0 !important;
+}
+
+@media (max-width:768px){
+  .info-card,
+  .section-card{
+    position: relative;
+  }
+
+  .info-card:not(:first-child),
+  .section-card:not(:first-child){
+    margin-left: -10px;
+    margin-right: -10px;
+    width: calc(100% + 20px);
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hdr">
+    <a href="/">&#8592;</a>
+    <div class="logo"><span class="dr">dr</span><span class="mec">Mecânico</span></div>
+  </div>
+
+  <div class="cards" id="cards">
+
+    <!-- CARD 1: Veículos -->
+    <div class="card card-1 open" id="c1" onclick="trocar(1)">
+      <div class="card-title">🚗 Veículos — quais são atendidos?</div>
+      <div class="card-body" id="b1">
+        <div class="scroll-box">
+          <div class="v-item">Volkswagen Gol — 2005 a 2020
+        </div>
+          <div class="v-item">Volkswagen Voyage — 2009 a 2020</div>
+          <div class="v-item">Volkswagen Fox — 2005 a 2019</div>
+          <div class="v-item">Volkswagen Saveiro — 2005 a 2020</div>
+          <div class="v-item">Fiat Uno — 2005 a 2020</div>
+          <div class="v-item">Fiat Palio — 2005 a 2017</div>
+          <div class="v-item">Fiat Siena — 2005 a 2017</div>
+          <div class="v-item">Fiat Grand Siena — 2012 a 2020</div>
+          <div class="v-item">Fiat Mobi — 2016 a 2020</div>
+          <div class="v-item">Fiat Argo 1.0 e 1.3 — 2017 a 2020</div>
+          <div class="v-item">Fiat Cronos 1.3 — 2018 a 2020</div>
+          <div class="v-item">Fiat Strada — 2005 a 2020</div>
+          <div class="v-item">Fiat Fiorino — 2005 a 2020</div>
+          <div class="v-item">Chevrolet Celta — 2005 a 2015</div>
+          <div class="v-item">Chevrolet Classic — 2005 a 2016</div>
+          <div class="v-item">Chevrolet Corsa — 2005 a 2012</div>
+          <div class="v-item">Chevrolet Prisma — 2006 a 2020</div>
+          <div class="v-item">Chevrolet Onix aspirado — 2013 a 2020</div>
+          <div class="v-item">Chevrolet Montana — 2005 a 2020</div>
+          <div class="v-item">Ford Ka — 2005 a 2020</div>
+          <div class="v-item">Ford Ka Sedan — 2014 a 2020</div>
+          <div class="v-item">Ford Fiesta Rocam — 2005 a 2014</div>
+          <div class="v-item">Ford Fiesta 1.6 aspirado — 2011 a 2019</div>
+          <div class="v-item">Renault Sandero — 2007 a 2020</div>
+          <div class="v-item">Renault Logan — 2007 a 2020</div>
+          <div class="v-item">Hyundai HB20 — 2012 a 2020</div>
+          <div class="v-item">Hyundai HB20S — 2013 a 2020</div>
+          <div class="v-item">Toyota Etios Hatch — 2012 a 2020</div>
+          <div class="v-item">Toyota Etios Sedan — 2012 a 2020</div>
+          <div class="v-item">Nissan March — 2014 a 2020</div>
+          <div class="v-item">Nissan Versa — 2014 a 2020</div>
+        </div>
+        <button class="btn-comprar btn-c1" onclick="event.stopPropagation();window.location.href='/comprar'">COMPRAR</button>
+        
+      </div>
+    </div>
+
+    <!-- CARD 2: Mão de obra -->
+    <div class="card card-2 closed" id="c2" onclick="trocar(2)">
+      <div class="card-title">🔧 Mão de obra — o que está incluso?</div>
+      <div class="card-body" id="b2" style="display:none">
+        <div class="scroll-box">
+          <div class="s-title">1. Manutenção preventiva básica
+        </div>
+          <div class="s-sub">Serviços incluídos:</div>
+          - Troca de óleo do motor<br>- Troca de filtro de óleo<br>- Troca de filtro de ar do motor<br>- Troca de filtro de cabine<br>- Verificação e complemento de fluidos (freio, arrefecimento, direção hidráulica)<br>- Inspeção geral preventiva
+          <hr class="s-hr">
+          <div class="s-title">2. Sistema elétrico básico</div>
+          <div class="s-sub">Serviços incluídos:</div>
+          - Troca de bateria<br>- Limpeza de terminais da bateria<br>- Troca de lâmpadas (farol, lanterna, freio)<br>- Verificação básica de carga da bateria<br>- Teste simples de alternador<br>- Verificação de fusíveis<br>
+          <div class="s-sub s-nao">Não incluídos:</div><span class="s-nao">- Módulos eletrônicos<br>- Injeção avançada<br>- Programação de ECU</span>
+          <hr class="s-hr">
+          <div class="s-title">3. Sistema de freios</div>
+          <div class="s-sub">Serviços incluídos:</div>
+          - Inspeção de pastilhas e discos<br>- Troca de pastilhas de freio<br>- Troca de lonas (freio a tambor)<br>- Verificação de fluido de freio<br>- Sangria básica do sistema
+          <hr class="s-hr">
+          <div class="s-title">4. Suspensão</div>
+          <div class="s-sub">Serviços incluídos:</div>
+          - Inspeção de suspensão<br>- Troca de amortecedores<br>- Troca de molas<br>- Troca de bandejas<br>- Troca de buchas<br>- Troca de pivôs<br>- Troca de bieletas<br>- Verificação de folgas e ruídos
+          <hr class="s-hr">
+          <div class="s-title">5. Motor (serviços intermediários)</div>
+          <div class="s-sub">Serviços incluídos:</div>
+          - Troca de velas de ignição<br>- Troca de cabos de vela (quando aplicável)<br>- Limpeza de corpo de borboleta<br>- Troca de correias (exceto complexos prolongados)<br>- Diagnóstico básico de funcionamento<br>
+          <div class="s-sub s-nao">Não incluídos:</div><span class="s-nao">- Retífica de motor<br>- Cabeçote<br>- Desmontagem parcial ou completa</span>
+          <hr class="s-hr">
+          <div class="s-title">6. Câmbio (manual e automático simples)</div>
+          <div class="s-sub">Serviços incluídos:</div>
+          - Troca de óleo de câmbio manual<br>- Troca de óleo de câmbio automático (simples)<br>- Troca de embreagem<br>- Verificação de funcionamento do câmbio<br>
+          <div class="s-sub s-nao">Não incluídos:</div><span class="s-nao">- Reparo interno de câmbio automático<br>- Mecatrônica</span>
+          <hr class="s-hr">
+          <div class="s-title">7. Diagnóstico básico</div>
+          <div class="s-sub">Serviços incluídos:</div>
+          - Leitura de scanner simples (OBD básico)<br>- Reset de luz de revisão<br>- Diagnóstico de ruídos<br>- Avaliação geral do veículo
+        </div>
+        <button class="btn-comprar btn-c2" onclick="event.stopPropagation();window.location.href='/comprar'">COMPRAR</button>
+        
+      </div>
+    </div>
+
+    <!-- CARD 3: Guincho -->
+    <div class="card card-3 closed" id="c3" onclick="trocar(3)">
+      <div class="card-title">🚛 Guincho — o que está incluso?</div>
+      <div class="card-body" id="b3" style="display:none">
+        <div class="scroll-box">
+          - 2 (duas) utilizações de guincho por ano.<br><br>
+          - Cada utilização inclui até 50 km de ida + 50 km de retorno, contados a partir do local de atendimento.<br><br>
+          - O serviço possui caráter pontual e sob demanda, não sendo contínuo ou ilimitado.<br><br>
+          - A utilização do guincho está sujeita à disponibilidade operacional dos prestadores credenciados.<br><br>
+          - O associado pode contratar 1 (uma) utilização adicional por ano, pelo valor de R$ 100,00, nas mesmas condições de quilometragem.<br><br>
+          <strong>Excedente de quilometragem</strong><br><br>
+          - Caso a distância ultrapasse os limites de 50 km + 50 km, o valor excedente será de responsabilidade do associado.<br><br>
+          - O pagamento do excedente será feito diretamente ao prestador. O custo do km adicional pode chegar a até R$ 12,00/km.<br><br>
+          - O valor será informado previamente ao associado para sua concordância antes da execução.
+        </div>
+        <button class="btn-comprar btn-c3" onclick="event.stopPropagation();window.location.href='/comprar'">COMPRAR</button>
+        
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var current = 1;
+function trocar(n) {
+  if(n === current) return;
+  [1,2,3].forEach(function(i) {
+    var c = document.getElementById('c'+i);
+    var b = document.getElementById('b'+i);
+    if(i === n) {
+      c.classList.remove('closed'); c.classList.add('open');
+      b.style.display = 'flex';
+    } else {
+      c.classList.remove('open'); c.classList.add('closed');
+      b.style.display = 'none';
+    }
+  });
+  current = n;
+}
+</script>
+</body>
+</html>
